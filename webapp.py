@@ -148,7 +148,9 @@ cutoff_all = datetime(2025, 1, 1)
 cutoff_5days = datetime.now() - timedelta(days=5)
 df_n_days = df_filtered[df_filtered['Date'].dt.date >= cutoff_all.date()]
 df_5_days = df_n_days[df_n_days['Date'].dt.date >= cutoff_5days.date()]
-
+df_n_days = df_n_days.sort_values(by='Date', ascending=False)
+df_5_days = df_5_days.sort_values(by='Date', ascending=False)
+df_all = df_all.sort_values(by='Date', ascending=False)
 # Display tables
 st.subheader("📌 Recent Issues (Last 5 Days)")
 st.dataframe(df_5_days, use_container_width=True, hide_index=True)
