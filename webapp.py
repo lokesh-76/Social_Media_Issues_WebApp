@@ -153,41 +153,42 @@ df_5_days = df_n_days[df_n_days['Date'].dt.date >= cutoff_5days.date()]
 df_n_days = df_n_days.sort_values(by='Date', ascending=False)
 df_5_days = df_5_days.sort_values(by='Date', ascending=False)
 df_all = df_all.sort_values(by='Date', ascending=False)
-# # Display tables
-# st.subheader("📌 Recent Issues (Last 5 Days)")
-# st.dataframe(df_5_days, use_container_width=True, hide_index=True)
 
-# st.subheader("🗂️ 1 Month Data")
-# st.dataframe(df_n_days, use_container_width=True, hide_index=True)
-
-# st.subheader("📊 All Collected Data")
-# st.dataframe(df_all, use_container_width=True, hide_index=True)
-
-
-# Helper function to show AgGrid with clickable links
-def show_aggrid_with_links(df):
-    df = df.copy()
-    # Ensure URL column is plain string (in case markdown is applied)
-    df["url"] = df["url"].apply(lambda x: x if not x.startswith("[") else x.split("](")[1][:-1])
-
-    gb = GridOptionsBuilder.from_dataframe(df)
-    gb.configure_column("url", cellRenderer='''
-        function(params) {
-            return `<a href="${params.value}" target="_blank">${params.value}</a>`
-        }
-    ''')
-    grid_options = gb.build()
-    AgGrid(df, gridOptions=grid_options, allow_unsafe_jscode=True, fit_columns_on_grid_load=True)
-
-# Display using AgGrid
+# Display tables
 st.subheader("📌 Recent Issues (Last 5 Days)")
-show_aggrid_with_links(df_5_days)
+st.dataframe(df_5_days, use_container_width=True, hide_index=True)
 
 st.subheader("🗂️ 1 Month Data")
-show_aggrid_with_links(df_n_days)
+st.dataframe(df_n_days, use_container_width=True, hide_index=True)
 
 st.subheader("📊 All Collected Data")
-show_aggrid_with_links(df_all)
+st.dataframe(df_all, use_container_width=True, hide_index=True)
+
+
+# # Helper function to show AgGrid with clickable links
+# def show_aggrid_with_links(df):
+#     df = df.copy()
+#     # Ensure URL column is plain string (in case markdown is applied)
+#     df["url"] = df["url"].apply(lambda x: x if not x.startswith("[") else x.split("](")[1][:-1])
+
+#     gb = GridOptionsBuilder.from_dataframe(df)
+#     gb.configure_column("url", cellRenderer='''
+#         function(params) {
+#             return `<a href="${params.value}" target="_blank">${params.value}</a>`
+#         }
+#     ''')
+#     grid_options = gb.build()
+#     AgGrid(df, gridOptions=grid_options, allow_unsafe_jscode=True, fit_columns_on_grid_load=True)
+
+# # Display using AgGrid
+# st.subheader("📌 Recent Issues (Last 5 Days)")
+# show_aggrid_with_links(df_5_days)
+
+# st.subheader("🗂️ 1 Month Data")
+# show_aggrid_with_links(df_n_days)
+
+# st.subheader("📊 All Collected Data")
+# show_aggrid_with_links(df_all)
 
 # # Download buttons
 # def convert_df(df):
