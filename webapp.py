@@ -11,6 +11,8 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 import streamlit as st
+from st_aggrid import AgGrid
+from st_aggrid.grid_options_builder import GridOptionsBuilder
 
 st.set_page_config(page_title="Social Media Tracker", layout="wide")
 
@@ -37,7 +39,7 @@ with st.spinner("Fetching Reddit data..."):
         dict_reddit = {}
         count = 0
         for sub in subreddits:
-            for submission in reddit.subreddit(sub).new(limit=50):
+            for submission in reddit.subreddit(sub).new(limit=100):
                 dict_reddit[count] = {
                     "Date": pd.to_datetime(submission.created_utc, unit='s', errors='coerce'),
                     "Title": submission.title,
@@ -140,10 +142,6 @@ with st.spinner("Fetching Microsoft Community data..."):
 # Merge & Filter
 # df_all = pd.concat([df_reddit, df_learn, df_tech_t], ignore_index=True)
 df_all = pd.concat([df_reddit, df_learn], ignore_index=True)
-df_all = df_all.copy()
-df_all.loc[:, 'url'] = df_all.apply(
-        lambda row: f'<a href="{row["url"]}">{row["url"]}</a>', axis=1
-    )
 df_all['Title'] = df_all['Title'].astype(str)
 df_filtered = df_all[df_all['Title'].str.lower().apply(lambda text: any(k in text for k in keywords))]
 
@@ -155,15 +153,41 @@ df_5_days = df_n_days[df_n_days['Date'].dt.date >= cutoff_5days.date()]
 df_n_days = df_n_days.sort_values(by='Date', ascending=False)
 df_5_days = df_5_days.sort_values(by='Date', ascending=False)
 df_all = df_all.sort_values(by='Date', ascending=False)
-# Display tables
+# # Display tables
+# st.subheader("📌 Recent Issues (Last 5 Days)")
+# st.dataframe(df_5_days, use_container_width=True, hide_index=True)
+
+# st.subheader("🗂️ 1 Month Data")
+# st.dataframe(df_n_days, use_container_width=True, hide_index=True)
+
+# st.subheader("📊 All Collected Data")
+# st.dataframe(df_all, use_container_width=True, hide_index=True)
+
+
+# Helper function to show AgGrid with clickable links
+def show_aggrid_with_links(df):
+    df = df.copy()
+    # Ensure URL column is plain string (in case markdown is applied)
+    df["url"] = df["url"].apply(lambda x: x if not x.startswith("[") else x.split("](")[1][:-1])
+
+    gb = GridOptionsBuilder.from_dataframe(df)
+    gb.configure_column("url", cellRenderer='''
+        function(params) {
+            return `<a href="${params.value}" target="_blank">${params.value}</a>`
+        }
+    ''')
+    grid_options = gb.build()
+    AgGrid(df, gridOptions=grid_options, allow_unsafe_jscode=True, fit_columns_on_grid_load=True)
+
+# Display using AgGrid
 st.subheader("📌 Recent Issues (Last 5 Days)")
-st.dataframe(df_5_days, use_container_width=True, hide_index=True)
+show_aggrid_with_links(df_5_days)
 
 st.subheader("🗂️ 1 Month Data")
-st.dataframe(df_n_days, use_container_width=True, hide_index=True)
+show_aggrid_with_links(df_n_days)
 
 st.subheader("📊 All Collected Data")
-st.dataframe(df_all, use_container_width=True, hide_index=True)
+show_aggrid_with_links(df_all)
 
 # # Download buttons
 # def convert_df(df):
