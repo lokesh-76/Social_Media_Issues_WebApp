@@ -52,8 +52,6 @@ with st.spinner("Fetching Reddit data..."):
         df_data = pd.DataFrame.from_dict(dict_reddit, orient='index')
         df_data = df_data.drop_duplicates(subset=['Title'], keep='first')
         df_data.loc[:, "Date"] = pd.to_datetime(df_data["Date"], unit='s', errors='coerce')
-        df_data['Date'] = pd.to_datetime(df_data['Date']).dt.tz_localize('UTC').dt.tz_convert('Asia/Kolkata')
-        #df_data['Date'] = df_data['Date'].dt.tz_convert('UTC').dt.tz_convert(timezone).dt.strftime('%Y-%m-%d %H:%M:%S')
         df_reddit = df_data.sort_values(by='Date', ascending=False)
     except Exception as e:
         st.error(f"Reddit scraping failed: {e}")
@@ -88,7 +86,8 @@ with st.spinner("Fetching Microsoft Community data..."):
         df_data_m_t  = df_data_m_t.drop_duplicates(subset=['Title'], keep='first')
         timezone = pytz.timezone("Asia/Kolkata")
         df_data_m_t['Date'] = pd.to_datetime(df_data_m_t['Date'], errors='coerce')
-        df_data_m_t['Date'] = df_data_m_t['Date'].dt.tz_convert('UTC').dt.tz_convert(timezone).dt.strftime('%Y-%m-%d %H:%M:%S')
+        #df_data_m_t['Date'] = df_data_m_t['Date'].dt.tz_convert('UTC').dt.tz_convert(timezone).dt.strftime('%Y-%m-%d %H:%M:%S')
+        df_data_m_t['Date'] = df_data_m_t['Date'].dt.tz_convert('UTC').dt.strftime('%Y-%m-%d %H:%M:%S')
         df_data_m_t['Date'] = pd.to_datetime(df_data_m_t['Date'], errors='coerce')
         df_learn = df_data_m_t.sort_values(by='Date', ascending=False)
     except Exception as e:
@@ -146,7 +145,7 @@ with st.spinner("Fetching Microsoft Community data..."):
 df_all = pd.concat([df_reddit, df_learn], ignore_index=True)
 df_all['Title'] = df_all['Title'].astype(str)
 df_filtered = df_all[df_all['Title'].str.lower().apply(lambda text: any(k in text for k in keywords))]
-df_filtered['Date'] = pd.to_datetime(df_filtered['Date'], errors='coerce')
+
 # Date filters
 cutoff_all = datetime.now() - timedelta(days=31)
 cutoff_5days = datetime.now() - timedelta(days=5)
