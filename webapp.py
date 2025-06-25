@@ -144,7 +144,7 @@ df_all['Title'] = df_all['Title'].astype(str)
 df_filtered = df_all[df_all['Title'].str.lower().apply(lambda text: any(k in text for k in keywords))]
 
 # Date filters
-cutoff_all = datetime(2025, 1, 1)
+cutoff_all = datetime.now() - timedelta(days=31)
 cutoff_5days = datetime.now() - timedelta(days=5)
 df_n_days = df_filtered[df_filtered['Date'].dt.date >= cutoff_all.date()]
 df_5_days = df_n_days[df_n_days['Date'].dt.date >= cutoff_5days.date()]
@@ -155,7 +155,7 @@ df_all = df_all.sort_values(by='Date', ascending=False)
 st.subheader("📌 Recent Issues (Last 5 Days)")
 st.dataframe(df_5_days, use_container_width=True, hide_index=True)
 
-st.subheader("🗂️ All Filtered Data (Since 2025)")
+st.subheader("🗂️ 1 Month Data")
 st.dataframe(df_n_days, use_container_width=True, hide_index=True)
 
 st.subheader("📊 All Collected Data")
