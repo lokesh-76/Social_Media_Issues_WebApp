@@ -20,7 +20,7 @@ keywords = ['windows','report','issue','update','upgrade','screen','hang','flick
             'launch','stuck','23h2','24h2','25h2','26h2']
 
 st.title("🔍 Social Media Tracker")
-st.caption("Scraping Reddit, Microsoft Learn, and Tech Community")
+st.caption("Scraping Reddit and Microsoft Community")
 
 # Initialize containers
 with st.spinner("Fetching Reddit data..."):
@@ -56,7 +56,7 @@ with st.spinner("Fetching Reddit data..."):
         df_reddit = pd.DataFrame()
 
 # Microsoft Learn
-with st.spinner("Fetching Microsoft Learn data..."):
+with st.spinner("Fetching Microsoft Community data..."):
     try:
         dict_learn = {}
         for page in range(1, 6):
@@ -91,55 +91,55 @@ with st.spinner("Fetching Microsoft Learn data..."):
         st.error(f"Microsoft Learn scraping failed: {e}")
         df_learn = pd.DataFrame()
 
-# Tech Community
-with st.spinner("Fetching Tech Community data..."):
-    try:
-        chrome_options = Options()
-        chrome_options.add_argument("--headless")
-        chrome_options.add_argument("--no-sandbox")
-        service = Service("D:\\Desktop\\AETriage_Tracker\\chromedriver.exe")  # Update path if needed
-        driver = webdriver.Chrome(service=service, options=chrome_options)
-        driver.get("https://techcommunity.microsoft.com/category/windows/discussions/windows11")
-        time.sleep(5)
-        for _ in range(5):
-            try:
-                show_more = driver.find_element(By.XPATH, '//button[contains(text(), "Show More")]')
-                if show_more.is_displayed():
-                    driver.execute_script("arguments[0].click();", show_more)
-                    time.sleep(3)
-            except:
-                break
-        soup = BeautifulSoup(driver.page_source, "html.parser")
-        discussions = soup.find_all("div", class_="MessageViewInline_lia-message__ALtxi")
-        dict_tech = {}
-        for i, disc in enumerate(discussions):
-            title_tag = disc.find("a", class_="MessageViewInline_lia-subject-link__BO63O")
-            date_tag = disc.find("span", title=True)
-            title = title_tag.get_text(strip=True) if title_tag else 'No title'
-            href = title_tag['href'] if title_tag else ''
-            date_str = date_tag['title'] if date_tag else ''
-            dt = datetime.strptime(date_str, "%B %d, %Y at %I:%M %p") if date_str else datetime.now()
-            dict_tech[i] = {
-                "Date": dt,
-                "Title": title,
-                "url": "https://techcommunity.microsoft.com/category/windows" + href,
-                "Source": "Microsoft Tech Community",
-                "UpVotes": ""
-            }
-        driver.quit()
-        df_tech = pd.DataFrame(dict_tech)
-        df_tech_t = df_tech.T
-        df_tech_t = df_tech_t.drop_duplicates(subset=['Title'], keep='first')
-        df_tech_t['Date'] = pd.to_datetime(df_tech_t['Date'], errors='coerce')
-        df_tech_t['Date'] = df_tech_t['Date'].dt.strftime('%Y-%m-%d %H:%M:%S')
+# # Tech Community
+# with st.spinner("Fetching Tech Community data..."):
+#     try:
+#         chrome_options = Options()
+#         chrome_options.add_argument("--headless")
+#         chrome_options.add_argument("--no-sandbox")
+#         service = Service("D:\\Desktop\\AETriage_Tracker\\chromedriver.exe")  # Update path if needed
+#         driver = webdriver.Chrome(service=service, options=chrome_options)
+#         driver.get("https://techcommunity.microsoft.com/category/windows/discussions/windows11")
+#         time.sleep(5)
+#         for _ in range(5):
+#             try:
+#                 show_more = driver.find_element(By.XPATH, '//button[contains(text(), "Show More")]')
+#                 if show_more.is_displayed():
+#                     driver.execute_script("arguments[0].click();", show_more)
+#                     time.sleep(3)
+#             except:
+#                 break
+#         soup = BeautifulSoup(driver.page_source, "html.parser")
+#         discussions = soup.find_all("div", class_="MessageViewInline_lia-message__ALtxi")
+#         dict_tech = {}
+#         for i, disc in enumerate(discussions):
+#             title_tag = disc.find("a", class_="MessageViewInline_lia-subject-link__BO63O")
+#             date_tag = disc.find("span", title=True)
+#             title = title_tag.get_text(strip=True) if title_tag else 'No title'
+#             href = title_tag['href'] if title_tag else ''
+#             date_str = date_tag['title'] if date_tag else ''
+#             dt = datetime.strptime(date_str, "%B %d, %Y at %I:%M %p") if date_str else datetime.now()
+#             dict_tech[i] = {
+#                 "Date": dt,
+#                 "Title": title,
+#                 "url": "https://techcommunity.microsoft.com/category/windows" + href,
+#                 "Source": "Microsoft Tech Community",
+#                 "UpVotes": ""
+#             }
+#         driver.quit()
+#         df_tech = pd.DataFrame(dict_tech)
+#         df_tech_t = df_tech.T
+#         df_tech_t = df_tech_t.drop_duplicates(subset=['Title'], keep='first')
+#         df_tech_t['Date'] = pd.to_datetime(df_tech_t['Date'], errors='coerce')
+#         df_tech_t['Date'] = df_tech_t['Date'].dt.strftime('%Y-%m-%d %H:%M:%S')
         
-    except Exception as e:
-        st.error(f"Tech Community scraping failed: {e}")
-        df_tech = pd.DataFrame()
+#     except Exception as e:
+#         st.error(f"Tech Community scraping failed: {e}")
+#         df_tech = pd.DataFrame()
 
-#Merge & Filter
-df_all = pd.concat([df_reddit, df_learn, df_tech_t], ignore_index=True)
-#df_all = pd.concat([df_reddit, df_learn], ignore_index=True)
+# Merge & Filter
+# df_all = pd.concat([df_reddit, df_learn, df_tech_t], ignore_index=True)
+df_all = pd.concat([df_reddit, df_learn], ignore_index=True)
 df_all['Title'] = df_all['Title'].astype(str)
 df_filtered = df_all[df_all['Title'].str.lower().apply(lambda text: any(k in text for k in keywords))]
 
