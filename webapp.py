@@ -138,7 +138,7 @@ with st.spinner("Fetching Tech Community data..."):
         df_tech = pd.DataFrame()
 
 #Merge & Filter
-df_all = pd.concat([df_reddit, df_learn, df_tech], ignore_index=True)
+df_all = pd.concat([df_reddit, df_learn, df_tech_t], ignore_index=True)
 #df_all = pd.concat([df_reddit, df_learn], ignore_index=True)
 df_all['Title'] = df_all['Title'].astype(str)
 df_filtered = df_all[df_all['Title'].str.lower().apply(lambda text: any(k in text for k in keywords))]
