@@ -140,6 +140,10 @@ with st.spinner("Fetching Microsoft Community data..."):
 # Merge & Filter
 # df_all = pd.concat([df_reddit, df_learn, df_tech_t], ignore_index=True)
 df_all = pd.concat([df_reddit, df_learn], ignore_index=True)
+df_all = df_all.copy()
+df_all.loc[:, 'url'] = df_all.apply(
+        lambda row: f'<a href="{row["url"]}">{row["url"]}</a>', axis=1
+    )
 df_all['Title'] = df_all['Title'].astype(str)
 df_filtered = df_all[df_all['Title'].str.lower().apply(lambda text: any(k in text for k in keywords))]
 
