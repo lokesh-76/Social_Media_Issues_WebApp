@@ -52,8 +52,8 @@ with st.spinner("Fetching Reddit data..."):
         df_data = pd.DataFrame.from_dict(dict_reddit, orient='index')
         df_data = df_data.drop_duplicates(subset=['Title'], keep='first')
         df_data.loc[:, "Date"] = pd.to_datetime(df_data["Date"], unit='s', errors='coerce')
-        #df_data['Date'] = pd.to_datetime(df_data['Date']).dt.tz_localize('UTC').dt.tz_convert('Asia/Kolkata')
-        df_data['Date'] = df_data['Date'].dt.tz_convert('UTC').dt.tz_convert(timezone).dt.strftime('%Y-%m-%d %H:%M:%S')
+        df_data['Date'] = pd.to_datetime(df_data['Date']).dt.tz_localize('UTC').dt.tz_convert('Asia/Kolkata')
+        #df_data['Date'] = df_data['Date'].dt.tz_convert('UTC').dt.tz_convert(timezone).dt.strftime('%Y-%m-%d %H:%M:%S')
         df_reddit = df_data.sort_values(by='Date', ascending=False)
     except Exception as e:
         st.error(f"Reddit scraping failed: {e}")
