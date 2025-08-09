@@ -1,73 +1,58 @@
-# 🧠 Social Media Tracker Web App
+# Social Media Tracker Web App
 
-This is a Streamlit-based web application that scrapes user-reported issues and discussions from **Reddit**, **Microsoft Learn**, and **Microsoft Tech Community**, filtered by Windows-related keywords. It helps testers, developers, and support engineers monitor feedback and reported problems across platforms in one place.
+This is a Streamlit-based web application designed to scrape user-reported issues and discussions from Reddit, Microsoft Learn, and Microsoft Tech Community, specifically filtered by Windows-related keywords.  
+It enables testers, developers, and support engineers to monitor feedback and reported problems across platforms in a single interface.
 
----
+## Features
 
-## 🚀 Features
-
-- 🔍 Scrapes data from:
+- Scrapes data from:
   - Reddit (multiple subreddits)
   - Microsoft Learn Q&A
   - Microsoft Tech Community forums
-- 🧠 Filters posts using Windows-specific keywords
-- 📅 Displays data from recent days or full history
-- 📊 View data in interactive tables
-- 📥 Download filtered results as Excel directly from the app
+- Filters posts using Windows-specific keywords
+- Displays data from recent days or the full history
+- Presents results in interactive, filterable tables
+- Allows direct download of filtered results as Excel files
 
----
-
-## 🛠️ Tech Stack
+## Tech Stack
 
 - Python
 - Streamlit
 - Pandas
 - PRAW (Reddit API)
-- BeautifulSoup (web scraping)
-- Selenium (web interaction)
-- OpenPyXL (Excel export)
+- BeautifulSoup (Web Scraping)
+- Selenium (Web Interaction)
+- OpenPyXL (Excel Export)
 
----
+## Setup Instructions
 
-## 📦 Setup Instructions
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/LokeshAdivishnu/SMT_WebApp.git
+   cd SMT_WebApp
+   ```
 
-### Clone the repo
+2. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-```bash
-git clone https://github.com/LokeshAdivishnu/SMT_WebApp.git
-cd SMT_WebApp
-```
+3. **Run the application**
+   ```bash
+   streamlit run webapp.py
+   ```
+   The app will run locally at: [http://localhost:8501](http://localhost:8501)
 
-### Install dependencies
+## Optional: Deploy Online
 
-```bash
-pip install -r requirements.txt
-```
-
----
-
-## ▶️ Run the App
-
-```bash
-streamlit run webapp.py
-```
-
-App will run locally at `http://localhost:8501`
-
----
-
-## 🌐 Deploy Online (Optional)
-
-Use [Streamlit Cloud](https://streamlit.io/cloud) for free hosting:
+You can deploy the app using Streamlit Cloud:
 
 1. Push your code to GitHub
-2. Log in at [streamlit.io/cloud](https://streamlit.io/cloud)
-3. Create a new app → Link your GitHub repo
-4. Deploy & share your unique URL!
+2. Log in to [Streamlit Cloud](https://streamlit.io/cloud)
+3. Create a new app and link your GitHub repository
+4. Deploy and share your unique URL
 
----
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 SMT_WebApp/
@@ -76,24 +61,17 @@ SMT_WebApp/
 └── README.md               # Project overview
 ```
 
----
+## Future Enhancements
 
-## 🧩 To-Do / Enhancements
+- Replace Selenium with headless API-based scraping for better online compatibility
+- Add charts such as volume trends or top keywords
+- Implement email alerts or notifications
+- Set up automatic data refresh using a scheduler
 
-- 🔄 Replace Selenium with headless API scraping for full online support
-- 📈 Add charts (e.g., volume trends or top keywords)
-- 🔔 Add email alerts or notifications
-- ⏱️ Set up automatic data refresh (scheduler)
-
----
-
-## 📬 Author
-
-**Lokesh Adivishnu**  
-GitHub: [@LokeshAdivishnu](https://github.com/LokeshAdivishnu)
-
----
-
-## 📝 License
+## License
 
 This project is open-source and free for personal and educational use.
+
+---
+
+**Created by Lokesh Adivishnu**
